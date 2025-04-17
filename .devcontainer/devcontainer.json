@@ -1,7 +1,7 @@
 {
     "name": "WonderTrader Development",
     "build": {
-        "dockerfile": "Dockerfile.local",
+        "dockerfile": "Dockerfile",
         "args": {
           },
         "context": ".."
