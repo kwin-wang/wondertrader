@@ -3,13 +3,6 @@ FROM ubuntu:20.04
 # 避免交互式提示
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 根据环境选择软件源
-ARG CODESPACES=false
-RUN if [ "$CODESPACES" = "false" ]; then \
-    sed -i 's/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list && \
-    sed -i 's/security.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list; \
-    fi
-
 # 安装基础开发工具
 RUN apt-get update && apt-get install -y \
     git \
