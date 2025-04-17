@@ -55,13 +55,6 @@ RUN dpkg -l | grep nanomsg
 # 设置工作目录
 WORKDIR /workspaces/wondertrader
 
-# 添加预编译依赖库，并解压
-ADD docker/mydeps_gcc8.4.0.7z /home
-RUN cd /home && 7za x mydeps_gcc8.4.0.7z
-
-# 验证 glibc 版本
-RUN ldd --version
-
 # 设置环境变量
 ENV BOOST_ROOT=/usr
 ENV RAPIDJSON_ROOT=/usr
