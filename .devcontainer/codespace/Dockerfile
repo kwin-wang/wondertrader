@@ -1,12 +1,10 @@
 FROM ubuntu:20.04
 
+# 添加构建参数，判断是否为本地环境
+ARG IS_LOCAL=true
+
 # 避免交互式提示
 ENV DEBIAN_FRONTEND=noninteractive
-
-# 根据环境选择apt源
-RUN sed -i 's@http://archive.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g' /etc/apt/sources.list && \
-    sed -i 's@http://security.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g' /etc/apt/sources.list; 
-    
 
 # 安装基础开发工具
 RUN apt-get update && apt-get install -y \
