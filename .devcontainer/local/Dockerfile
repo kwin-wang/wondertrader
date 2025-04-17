@@ -1,10 +1,9 @@
 FROM ubuntu:20.04
 
-# 添加构建参数，判断是否为本地环境
-ARG IS_LOCAL=true
-
 # 避免交互式提示
 ENV DEBIAN_FRONTEND=noninteractive
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list \
+    && sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
 
 # 安装基础开发工具
 RUN apt-get update && apt-get install -y \
