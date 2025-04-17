@@ -5,6 +5,21 @@
 #include <windows.h>
 #endif
 
+#if defined(__aarch64__) || defined(__arm__) || defined(_M_ARM) || defined(_M_ARM64)
+  // ARM 架构 (包括 GCC/Clang 和 MSVC)
+  #ifdef _MSC_VER
+    #define PAUSE() __yield()
+  #else
+    #define PAUSE() asm volatile("yield")
+  #endif
+#elif defined(_MSC_VER)
+  // MSVC 在 x86/x64 架构
+  #define PAUSE() _mm_pause()
+#else
+  // GCC/Clang 在 x86/x64 架构
+  #define PAUSE() __builtin_ia32_pause()
+#endif
+
 class SpinMutex
 {
 private:
@@ -20,14 +35,10 @@ public:
 
 			while (flag.load(std::memory_order_relaxed))
 			{
-#ifdef _MSC_VER
-				_mm_pause();
-#else
-				__builtin_ia32_pause();
-#endif
+				PAUSE();
 			}
 		}
-	}
+	}	
 
 	void unlock()
 	{
