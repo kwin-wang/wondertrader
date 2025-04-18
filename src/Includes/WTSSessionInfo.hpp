@@ -191,6 +191,15 @@ public:
 		if(m_tradingTimes.empty())
 			return INVALID_UINT32;
 
+		// Special handling for 24-hour trading
+		if (m_tradingTimes.size() == 1 && 
+			m_tradingTimes[0].first == 0 && 
+			m_tradingTimes[0].second == 2400)
+		{
+			if (uMinutes == 1440)
+				return 0;
+		}
+
 		uint32_t offset = uMinutes;
 		TradingTimes::iterator it = m_tradingTimes.begin();
 		for(; it != m_tradingTimes.end(); it++)
@@ -452,7 +461,15 @@ public:
 
 	inline bool	isLastOfSection(uint32_t uTime)
 	{
-		//uint32_t offTime = offsetTime(uTime, false);
+		// Special handling for 24-hour trading
+		if (m_tradingTimes.size() == 1 && 
+			m_tradingTimes[0].first == 0 && 
+			m_tradingTimes[0].second == 2400)
+		{
+			if (uTime == 0)
+				return true;
+		}
+
 		TradingTimes::iterator it = m_tradingTimes.begin();
 		for(; it != m_tradingTimes.end(); it++)
 		{
@@ -505,7 +522,17 @@ public:
 	inline uint32_t	offsetTime(uint32_t uTime, bool bAlignLeft) const
 	{
 		if (m_uOffsetMins == 0)
+		{
+			// Special handling for 24-hour trading when not aligning left
+			if (!bAlignLeft && uTime == 0 && 
+				m_tradingTimes.size() == 1 && 
+				m_tradingTimes[0].first == 0 && 
+				m_tradingTimes[0].second == 2400)
+			{
+				return 2400;
+			}
 			return uTime;
+		}
 
 		int32_t curMinute = (uTime/100)*60 + uTime%100;
 		curMinute += m_uOffsetMins;
