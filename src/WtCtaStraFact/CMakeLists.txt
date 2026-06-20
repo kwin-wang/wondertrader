@@ -1,6 +1,6 @@
 
 #1. 确定CMake的最低版本需求
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.10)
 
 #2. 确定工程名
 PROJECT(WtCtaStraFact LANGUAGES CXX)
@@ -17,7 +17,7 @@ LINK_DIRECTORIES(${LNKS})
 ADD_LIBRARY(WtCtaStraFact SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
-	stdc++fs
+	${FS_LIB}
 	dl
 )
 

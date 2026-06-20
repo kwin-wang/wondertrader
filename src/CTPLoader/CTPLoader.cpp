@@ -2,7 +2,11 @@
 #include <map>
 #include <set>
 //v6.3.15
+#ifdef __APPLE__
+#include "../API/CTP6.6.9/ThostFtdcTraderApi.h"
+#else
 #include "../API/CTP6.3.15/ThostFtdcTraderApi.h"
+#endif
 #include "TraderSpi.h"
 
 #include "../Share/IniHelper.hpp"
@@ -250,6 +254,10 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 	}
 
 	// 初始化UserApi
+#ifdef __APPLE__
+	// macOS下CTP仅提供静态库, 直接静态链接调用CreateFtdcTraderApi
+	g_ctpCreator = &CThostFtdcTraderApi::CreateFtdcTraderApi;
+#else
 	DllHandle dllInst = DLLHelper::load_library(MODULE_NAME.c_str());
 	if (dllInst == NULL)
 		printf("Loading module %s failed\r\n", MODULE_NAME.c_str());
@@ -264,6 +272,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 #endif
 	if (g_ctpCreator == NULL)
 		printf("Loading CreateFtdcTraderApi failed\r\n");
+#endif
 
 	std::string flowPath = fmtutil::format("./CTPFlow/{}/{}/", BROKER_ID, INVESTOR_ID);
 	boost::filesystem::create_directories(flowPath.c_str());

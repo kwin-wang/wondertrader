@@ -1,6 +1,6 @@
 
 #1. 确定CMake的最低版本需求
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.10)
 
 #2. 确定工程名
 PROJECT(TraderOES LANGUAGES CXX)
@@ -26,14 +26,14 @@ ELSE(GNUCC)
 		SET(LIBS
 			dl
 			boost_thread
-			stdc++fs
+			${FS_LIB}
 			ws2_32
 			)
 	ELSE(UNIX)
 		SET(LIBS
 			dl
 			boost_thread
-			stdc++fs
+			${FS_LIB}
 			)
 	ENDIF()
 ENDIF()
