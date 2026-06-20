@@ -250,6 +250,10 @@ bool TraderCTP::init(WTSVariant* params)
 
 	m_strFlowDir = StrUtil::standardisePath(m_strFlowDir);
 
+#ifdef __APPLE__
+	// macOS下CTP仅提供静态库, 直接静态链接, 让m_funcCreator指向静态的CreateFtdcTraderApi
+	m_funcCreator = &CThostFtdcTraderApi::CreateFtdcTraderApi;
+#else
 	std::string module = params->getCString("ctpmodule");
 	if (module.empty())
 		module = "thosttraderapi_se";
@@ -267,6 +271,7 @@ bool TraderCTP::init(WTSVariant* params)
 	const char* creatorName = "_ZN19CThostFtdcTraderApi19CreateFtdcTraderApiEPKc";
 #endif
 	m_funcCreator = (CTPCreator)DLLHelper::get_symbol(m_hInstCTP, creatorName);
+#endif
 
 	m_bQuickStart = params->getBoolean("quick");
 

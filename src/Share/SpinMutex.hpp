@@ -13,6 +13,7 @@ typedef boost::detail::spinlock::scoped_lock SpinLock;
 #else
 
 #include <atomic>
+#include <thread>
 #ifdef _MSC_VER
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -37,8 +38,12 @@ public:
 			{
 #ifdef _MSC_VER
 				_mm_pause();
-#else
+#elif defined(__aarch64__) || defined(__arm__)
+				__asm__ __volatile__("yield");
+#elif defined(__x86_64__) || defined(__i386__)
 				__builtin_ia32_pause();
+#else
+				std::this_thread::yield();
 #endif
 			}
 		}

@@ -1,2 +1,4 @@
 dist/*
 .xmake
+# macOS下自动拉取的vendored spdlog(由src/build_release.sh按需clone)
+third-party/spdlog-src/

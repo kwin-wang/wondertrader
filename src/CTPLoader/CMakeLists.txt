@@ -1,6 +1,6 @@
 
 #1. 确定CMake的最低版本需求
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.10)
 
 #2. 确定工程名
 project(CTPLoader LANGUAGES CXX)
@@ -28,12 +28,26 @@ SET(LIBS
 
 IF(WIN32)
 LIST(APPEND LIBS iconv)
+ELSEIF(APPLE)
+    # 使用CTP自带的OpenSSL 1.x静态库, comunicationkeylib.a无lib前缀须用完整路径
+    SET(CTP_LIB_DIR ${PROJECT_SOURCE_DIR}/../API/CTP6.6.9/darwin/libs)
+    LIST(APPEND LIBS
+        iconv
+        thosttraderapi_se
+        ${CTP_LIB_DIR}/libssl.a
+        ${CTP_LIB_DIR}/libcrypto.a
+        ${CTP_LIB_DIR}/comunicationkeylib.a
+    )
 ENDIF()
 
 #9. 生成可执行文件
 ADD_LIBRARY(CTPLoader SHARED ${SRC})
 IF (MSVC)
 ELSE (GNUCC)
+    IF(APPLE)
+        TARGET_LINK_DIRECTORIES(CTPLoader PRIVATE
+            ${PROJECT_SOURCE_DIR}/../API/CTP6.6.9/darwin)
+    ENDIF()
     TARGET_LINK_LIBRARIES(CTPLoader ${LIBS})
 ENDIF ()
 
